@@ -5,11 +5,11 @@
  * A API KEY está apenas no .env do servidor.
  */
 
-const { GoogleGenAI } = require("@google/genai");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 const rateLimit = require("express-rate-limit");
 
 // Cliente Gemini — inicializado com a chave do ambiente
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 // Rate limit específico para endpoints de IA (mais restrito — custa dinheiro)
 const aiLimiter = rateLimit({
@@ -20,13 +20,9 @@ const aiLimiter = rateLimit({
 
 /** Chamada base ao Gemini */
 async function callGemini(systemPrompt, userMessage, maxTokens = 900) {
-  const response = await ai.models.generateContent({
-    model: "gemini-3-flash-preview",
-    contents: [
-      { role: "user", parts: [{ text: `${systemPrompt}\n\n---\n\n${userMessage}` }] }
-    ],
-  });
-  return response.text || "";
+  const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
+  const response = await model.generateContent(`${systemPrompt}\n\n---\n\n${userMessage}`);
+  return response.response.text() || "";
 }
 
 /**
