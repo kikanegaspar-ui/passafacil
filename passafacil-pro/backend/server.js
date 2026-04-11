@@ -82,7 +82,7 @@ app.use((req, res) => {
 
 // ── Ligação MongoDB e arranque ─────────────────────────
 mongoose
-  .connect(process.env.DB_URI)
+  .connect(process.env.MONGO_URI || process.env.DB_URI)
   .then(async () => {
     console.log("✅ MongoDB ligado.");
     // Criar utilizador admin inicial se não existir
