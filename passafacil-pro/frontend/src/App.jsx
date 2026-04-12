@@ -739,6 +739,5 @@ export default function PassaFacil() {
       </div>
       <div style={{ height:72 }} />
     </div>
-  </div>
   );
 }
