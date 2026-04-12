@@ -1,34 +1,32 @@
 /**
  * controllers/aiController.js
- * TODA a comunicação com a API Gemini acontece AQUI.
- * O frontend NUNCA chama a Gemini directamente.
- * A API KEY está apenas no .env do servidor.
+ * Usa Groq (LLaMA 3) — rápido e gratuito.
  */
 
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const Groq   = require("groq-sdk");
 const rateLimit = require("express-rate-limit");
 
-// Cliente Gemini — inicializado com a chave do ambiente
-const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-// Rate limit específico para endpoints de IA (mais restrito — custa dinheiro)
 const aiLimiter = rateLimit({
-  windowMs: 60 * 1000,         // 1 minuto
-  max:      10,                 // máximo 10 chamadas IA por minuto por IP
+  windowMs: 60 * 1000,
+  max:      10,
   message:  { error: "Muitos pedidos à IA. Aguarda um momento." },
 });
 
-/** Chamada base ao Gemini */
-async function callGemini(systemPrompt, userMessage, maxTokens = 900) {
- const model = ai.getGenerativeModel({ model: "gemini-2.0-flash" });
-  const response = await model.generateContent(`${systemPrompt}\n\n---\n\n${userMessage}`);
-  return response.response.text() || "";
+async function callGroq(systemPrompt, userMessage, maxTokens = 900) {
+  const response = await groq.chat.completions.create({
+    model: "llama3-70b-8192",
+    messages: [
+      { role: "system", content: systemPrompt },
+      { role: "user",   content: userMessage  },
+    ],
+    max_tokens: maxTokens,
+    temperature: 0.7,
+  });
+  return response.choices[0]?.message?.content || "";
 }
 
-/**
- * Resolve exercício com explicação passo a passo.
- * Usada internamente e exposta via POST /api/ai/solve
- */
 async function solveWithAI(exercise, discipline, level = "12ª Classe") {
   const systemPrompt = `És o professor de ${discipline} do PassaFácil Angola (ensino médio angolano, ${level}).
 Resolve exercícios de forma clara e pedagógica em português angolano.
@@ -54,21 +52,16 @@ Formato EXACTO:
 💡 DICA
 [truque para memorizar]`;
 
-  return await callGemini(systemPrompt, exercise, 900);
+  return await callGroq(systemPrompt, exercise, 900);
 }
 
-/**
- * Modera resolução de aluno.
- * Retorna objecto { score, verdict, feedback, tip }
- * Usada internamente no solutionController e no adminController.
- */
 async function moderateWithAI(question, answer, discipline) {
   const systemPrompt = `És professor rigoroso de ${discipline} do ensino médio angolano.
 Avalia a resolução do aluno com rigor académico.
 Responde APENAS em JSON puro (sem markdown, sem código, sem explicação):
 {"score":0-100,"verdict":"CORRECTO|PARCIAL|INCORRETO","feedback":"1 frase clara","tip":"1 sugestão de melhoria"}`;
 
-  const raw = await callGemini(
+  const raw = await callGroq(
     systemPrompt,
     `QUESTÃO: ${question}\nRESPOSTA DO ALUNO: ${answer}`,
     300
@@ -81,8 +74,6 @@ Responde APENAS em JSON puro (sem markdown, sem código, sem explicação):
   }
 }
 
-// ── POST /api/ai/solve ─────────────────────────────────
-// Handler HTTP — requer autenticação
 async function handleSolve(req, res) {
   try {
     const { exercise, discipline, level } = req.body;
@@ -97,7 +88,6 @@ async function handleSolve(req, res) {
 
     const result = await solveWithAI(exercise.trim(), discipline, level || "12ª Classe");
 
-    // Registar uso no perfil do utilizador
     const User = require("../models/User");
     await User.findByIdAndUpdate(user._id, {
       $inc: { aiUses: 1 },
@@ -117,8 +107,6 @@ async function handleSolve(req, res) {
   }
 }
 
-// ── POST /api/ai/moderate ──────────────────────────────
-// Só para uso interno (adminController). Não exposta directamente.
 async function handleModerate(req, res) {
   try {
     const { question, answer, discipline } = req.body;
