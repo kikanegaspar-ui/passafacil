@@ -20,7 +20,7 @@ const aiLimiter = rateLimit({
 
 /** Chamada base ao Gemini */
 async function callGemini(systemPrompt, userMessage, maxTokens = 900) {
- const model = ai.getGenerativeModel({ model: "gemini-2.5-flash-preview-04-17" });
+ const model = ai.getGenerativeModel({ model: "gemini-2.0-flash" });
   const response = await model.generateContent(`${systemPrompt}\n\n---\n\n${userMessage}`);
   return response.response.text() || "";
 }
