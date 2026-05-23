@@ -1,156 +1,110 @@
-# PassaFácil PRO — Arquitectura Completa
+# 🌾 AgroMercado Angola
 
-## 📁 Estrutura de Pastas
+Mercado digital para pecuária e avicultura — MVP construído com Flask + SQLAlchemy + Tailwind CSS.
+
+---
+
+## Estrutura do Projecto
 
 ```
-passafacil/
-├── backend/
-│   ├── controllers/
-│   │   ├── authController.js       # Login, registo, JWT
-│   │   ├── solutionController.js   # CRUD resoluções + votação
-│   │   ├── aiController.js         # Gemini API (NUNCA no frontend)
-│   │   └── adminController.js      # Moderação (role admin obrigatório)
-│   ├── routes/
-│   │   ├── auth.js
-│   │   ├── solutions.js
-│   │   ├── ai.js
-│   │   ├── users.js
-│   │   └── admin.js                # Protegido por requireAuth + requireAdmin
-│   ├── models/
-│   │   ├── User.js                 # Schema com password select:false
-│   │   └── Solution.js
-│   ├── middleware/
-│   │   └── auth.js                 # requireAuth, requireAdmin, optionalAuth
-│   ├── server.js                   # Entry point Express
-│   ├── .env                        # NUNCA commitar para Git
-│   └── package.json
-│
-└── frontend/
-    ├── src/
-    │   ├── services/
-    │   │   └── api.js              # Único ponto de contacto com o backend
-    │   ├── App.jsx                 # UI limpa — sem API keys, sem admin
-    │   └── main.jsx
-    ├── index.html
-    ├── vite.config.js
-    ├── .env
-    └── package.json
+agro_market/
+├── run.py                        # Entry point
+├── requirements.txt
+├── instance/                     # SQLite database (auto-criado)
+│   └── agro_market.db
+└── app/
+    ├── __init__.py               # Application factory
+    ├── models.py                 # SQLAlchemy models
+    ├── blueprints/
+    │   ├── auth.py               # Registo / Login / Logout
+    │   ├── buyer.py              # Marketplace público + API search
+    │   └── seller.py             # Dashboard do vendedor (CRUD)
+    ├── static/
+    │   └── js/
+    │       ├── search.js         # Autocomplete live search
+    │       └── dashboard.js      # Toggle + delete async
+    └── templates/
+        ├── base.html
+        ├── auth/
+        │   ├── login.html
+        │   └── register.html
+        ├── buyer/
+        │   ├── index.html
+        │   ├── products.html
+        │   ├── product_detail.html
+        │   └── _product_card.html
+        ├── seller/
+        │   ├── dashboard.html
+        │   ├── product_form.html
+        │   └── profile.html
+        └── errors/
+            ├── 404.html
+            ├── 500.html
+            └── 413.html
 ```
 
 ---
 
-## 🚀 Como Correr
+## Configuração Rápida
 
-### 1. Pré-requisitos
-- Node.js 18+
-- MongoDB (local ou MongoDB Atlas)
-
-### 2. Backend
+### 1. Clonar / extrair o projecto
 
 ```bash
-cd backend
-npm install
-
-# Editar o ficheiro .env:
-#   DB_URI=mongodb://localhost:27017/passafacil
-#   JWT_SECRET=<gera com: node -e "console.log(require('crypto').randomBytes(64).toString('hex'))">
-#   ADMIN_SEED_PASSWORD=<senha forte para o admin>
-#   GEMINI_API_KEY=AIzaSyAs9SLyhQedp-t2cNQ9e6Z7JOZgmIhT7TA
-
-npm run dev   # desenvolvimento (nodemon)
-npm start     # produção
+cd agro_market
 ```
 
-O servidor arranca em **http://localhost:4000**
-
-### 3. Frontend
+### 2. Criar ambiente virtual
 
 ```bash
-cd frontend
-npm install
-
-# O .env já está configurado para localhost
-# Em produção: VITE_API_URL=https://teu-backend.com/api
-
-npm run dev    # http://localhost:3000
-npm run build  # gera pasta dist/ para produção
+python -m venv venv
+# Linux / macOS
+source venv/bin/activate
+# Windows
+venv\Scripts\activate
 ```
 
----
+### 3. Instalar dependências
 
-## 🔒 Segurança Implementada
-
-| Camada | Medida |
-|--------|--------|
-| Senhas | `bcrypt` com custo 12 — nunca em plain text |
-| Auth | JWT com expiração 7 dias |
-| Admin | Middleware `requireAdmin` verifica role na DB |
-| API Keys | Apenas no `.env` do servidor — nunca no frontend |
-| Rate limit | 100 req/15min global, 20 req/15min auth, 10 req/min IA |
-| Headers | `helmet` define cabeçalhos seguros automaticamente |
-| CORS | Apenas o domínio do frontend |
-| Senhas na API | `select: false` no schema — nunca devolvidas |
-
----
-
-## 🌐 Endpoints da API
-
-### Públicos
-```
-GET  /api/health
-GET  /api/solutions          # resoluções aprovadas
-GET  /api/users/ranking      # top 10
-```
-
-### Autenticados (JWT obrigatório)
-```
-POST /api/auth/register
-POST /api/auth/login
-GET  /api/auth/me
-POST /api/solutions          # submeter resolução
-POST /api/solutions/:id/vote
-POST /api/ai/solve           # resolver com Gemini
-GET  /api/users/profile
-```
-
-### Admin (JWT + role:"admin")
-```
-GET   /api/admin/solutions
-PATCH /api/admin/solutions/:id        # aprovar/rejeitar
-POST  /api/admin/solutions/:id/reverify  # reavaliar com IA
-GET   /api/admin/stats
-GET   /api/admin/users
-```
-
----
-
-## 🏭 Produção
-
-### Backend (ex: Railway, Render, VPS)
 ```bash
-# Variáveis de ambiente no painel do hosting:
-NODE_ENV=production
-DB_URI=mongodb+srv://...
-JWT_SECRET=<segredo de 64 chars>
-GEMINI_API_KEY=...
-FRONTEND_URL=https://teu-frontend.com
-ADMIN_SEED_PASSWORD=<senha forte>
+pip install -r requirements.txt
 ```
 
-### Frontend (ex: Vercel, Netlify)
+### 4. Arrancar o servidor
+
 ```bash
-# Variável de ambiente:
-VITE_API_URL=https://teu-backend.com/api
+python run.py
 ```
+
+Abra `http://localhost:5000` no browser.
+
+A base de dados SQLite e as categorias padrão são criadas automaticamente na primeira execução.
 
 ---
 
-## ⚠️ Checklist de Segurança antes de ir para Produção
+## Funcionalidades MVP
 
-- [ ] Alterar `ADMIN_SEED_PASSWORD` no `.env`
-- [ ] Gerar `JWT_SECRET` aleatório (mínimo 64 chars)
-- [ ] Nunca commitar `.env` para Git (está no `.gitignore`)
-- [ ] Activar HTTPS no backend
-- [ ] Configurar `FRONTEND_URL` correctamente no CORS
-- [ ] Activar autenticação no MongoDB Atlas
-- [ ] Considerar adicionar refresh tokens para sessões longas
+| Funcionalidade | Detalhe |
+|---|---|
+| Registo / Login | RBAC: Comprador vs Vendedor |
+| Dashboard Vendedor | CRUD completo de produtos |
+| Feed Comprador | Pesquisa + filtro por categoria |
+| Detalhe do Produto | Botão WhatsApp com mensagem pré-preenchida |
+| Pesquisa Live | Autocomplete via Fetch API |
+| Toggles AJAX | Activar/desactivar produtos sem reload |
+| Páginas de erro | 404 / 500 / 413 personalizadas |
+| Mobile-first | Totalmente responsivo |
+
+---
+
+## Variáveis de Ambiente (Produção)
+
+```bash
+export SECRET_KEY="uma-chave-secreta-muito-longa-e-aleatoria"
+```
+
+## Produção com Gunicorn
+
+```bash
+pip install gunicorn
+gunicorn -w 4 -b 0.0.0.0:8000 "run:app"
+```

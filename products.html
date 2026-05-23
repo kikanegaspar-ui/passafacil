@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}
+  {% if current_query %}Resultados para "{{ current_query }}"{% else %}Todos os Produtos{% endif %}
+  — AgroMercado
+{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+  <!-- Page Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+    <div>
+      <h1 class="font-display text-2xl sm:text-3xl text-forest-700">
+        {% if current_query %}
+          Resultados para "<span class="text-harvest-500">{{ current_query }}</span>"
+        {% elif current_category %}
+          {% for cat in categories %}{% if cat.slug == current_category %}{{ cat.icon }} {{ cat.name }}{% endif %}{% endfor %}
+        {% else %}
+          Todos os Produtos
+        {% endif %}
+      </h1>
+      <p class="text-sm text-gray-500 mt-1">{{ pagination.total }} produto(s) encontrado(s)</p>
+    </div>
+
+    <!-- Search form -->
+    <form method="GET" action="{{ url_for('buyer.products') }}" class="flex gap-2">
+      <input
+        type="text"
+        name="q"
+        value="{{ current_query }}"
+        placeholder="Pesquisar…"
+        class="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-forest-400 w-48 sm:w-64"
+      />
+      {% if current_category %}
+        <input type="hidden" name="categoria" value="{{ current_category }}" />
+      {% endif %}
+      <button type="submit"
+              class="bg-forest-600 hover:bg-forest-700 text-white px-5 py-2 rounded-full text-sm font-semibold transition-colors">
+        Pesquisar
+      </button>
+    </form>
+  </div>
+
+  <div class="flex gap-8">
+    <!-- ===== SIDEBAR FILTERS ===== -->
+    <aside class="hidden lg:block w-56 flex-shrink-0">
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 sticky top-24">
+        <h3 class="font-semibold text-forest-700 mb-4 text-sm uppercase tracking-wide">Filtrar</h3>
+
+        <div class="space-y-1">
+          <a href="{{ url_for('buyer.products', q=current_query) }}"
+             class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm transition-colors
+                    {{ 'bg-forest-600 text-white font-semibold' if not current_category else 'text-gray-600 hover:bg-forest-50' }}">
+            🗂 Todas as categorias
+          </a>
+          {% for cat in categories %}
+            <a href="{{ url_for('buyer.products', q=current_query, categoria=cat.slug) }}"
+               class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm transition-colors
+                      {{ 'bg-forest-600 text-white font-semibold' if current_category == cat.slug else 'text-gray-600 hover:bg-forest-50' }}">
+              {{ cat.icon }} {{ cat.name }}
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+    </aside>
+
+    <!-- ===== PRODUCT GRID ===== -->
+    <div class="flex-1 min-w-0">
+
+      <!-- Mobile Category Chips -->
+      <div class="lg:hidden flex gap-2 overflow-x-auto pb-3 mb-5 scrollbar-hide">
+        <a href="{{ url_for('buyer.products', q=current_query) }}"
+           class="flex-shrink-0 text-xs font-semibold px-4 py-2 rounded-full border transition-colors
+                  {{ 'bg-forest-600 text-white border-forest-600' if not current_category else 'bg-white text-gray-600 border-gray-200' }}">
+          Todas
+        </a>
+        {% for cat in categories %}
+          <a href="{{ url_for('buyer.products', q=current_query, categoria=cat.slug) }}"
+             class="flex-shrink-0 text-xs font-semibold px-4 py-2 rounded-full border transition-colors
+                    {{ 'bg-forest-600 text-white border-forest-600' if current_category == cat.slug else 'bg-white text-gray-600 border-gray-200' }}">
+            {{ cat.icon }} {{ cat.name }}
+          </a>
+        {% endfor %}
+      </div>
+
+      {% if products %}
+        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+          {% for product in products %}
+            {% include "buyer/_product_card.html" %}
+          {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if pagination.pages > 1 %}
+          <nav class="flex justify-center items-center gap-2 mt-10">
+            {% if pagination.has_prev %}
+              <a href="{{ url_for('buyer.products', q=current_query, categoria=current_category, page=pagination.prev_num) }}"
+                 class="px-4 py-2 rounded-xl bg-white border border-gray-200 text-sm font-medium hover:bg-forest-50 transition-colors">
+                ← Anterior
+              </a>
+            {% endif %}
+
+            <span class="text-sm text-gray-500 px-3">
+              Página {{ pagination.page }} de {{ pagination.pages }}
+            </span>
+
+            {% if pagination.has_next %}
+              <a href="{{ url_for('buyer.products', q=current_query, categoria=current_category, page=pagination.next_num) }}"
+                 class="px-4 py-2 rounded-xl bg-white border border-gray-200 text-sm font-medium hover:bg-forest-50 transition-colors">
+                Próxima →
+              </a>
+            {% endif %}
+          </nav>
+        {% endif %}
+
+      {% else %}
+        <!-- Empty State -->
+        <div class="text-center py-20">
+          <div class="text-6xl mb-4">🔍</div>
+          <h3 class="font-display text-xl text-forest-700 mb-2">Nenhum produto encontrado</h3>
+          <p class="text-gray-500 mb-6">Tente pesquisar com palavras-chave diferentes ou explore outra categoria.</p>
+          <a href="{{ url_for('buyer.products') }}"
+             class="inline-flex items-center gap-2 bg-forest-600 hover:bg-forest-700 text-white px-6 py-3 rounded-full font-semibold transition-colors">
+            Ver todos os produtos
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

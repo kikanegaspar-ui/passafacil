@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}AgroMercado Angola — Pecuária e Avicultura{% endblock %}
+
+{% block content %}
+
+<!-- ===== HERO ===== -->
+<section class="hero-texture bg-gradient-to-br from-forest-700 via-forest-600 to-forest-800 text-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+    <div class="max-w-2xl">
+      <p class="text-harvest-400 font-semibold text-sm uppercase tracking-widest mb-3">
+        Mercado Digital Agrícola
+      </p>
+      <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-5">
+        Tudo para a sua<br/>
+        <span class="text-harvest-400">Pecuária</span> &
+        <span class="text-harvest-400">Avicultura</span>
+      </h1>
+      <p class="text-forest-200 text-lg mb-8 leading-relaxed">
+        Encontre rações, medicamentos veterinários e equipamentos agrícolas directamente dos melhores fornecedores em Angola.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-3">
+        <a href="{{ url_for('buyer.products') }}"
+           class="inline-flex items-center justify-center gap-2 bg-harvest-500 hover:bg-harvest-400 text-forest-900 font-bold px-8 py-3.5 rounded-full transition-all hover:scale-105 shadow-lg">
+          🛒 Ver todos os produtos
+        </a>
+        {% if not current_user.is_authenticated %}
+          <a href="{{ url_for('auth.register') }}?role=seller"
+             class="inline-flex items-center justify-center gap-2 border-2 border-forest-400 hover:border-harvest-400 hover:text-harvest-400 text-white font-semibold px-8 py-3.5 rounded-full transition-all">
+            🏪 Vender no AgroMercado
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STATS STRIP ===== -->
+<div class="bg-forest-900 text-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 grid grid-cols-3 divide-x divide-forest-700 text-center">
+    <div class="px-4">
+      <div class="font-display text-2xl text-harvest-400 font-bold">100%</div>
+      <div class="text-xs text-forest-400 mt-0.5">Angola</div>
+    </div>
+    <div class="px-4">
+      <div class="font-display text-2xl text-harvest-400 font-bold">AOA</div>
+      <div class="text-xs text-forest-400 mt-0.5">Kwanza</div>
+    </div>
+    <div class="px-4">
+      <div class="font-display text-2xl text-harvest-400 font-bold">24/7</div>
+      <div class="text-xs text-forest-400 mt-0.5">Disponível</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CATEGORIES ===== -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+  <h2 class="font-display text-2xl sm:text-3xl text-forest-700 mb-6">Explorar por Categoria</h2>
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+    {% for cat in categories %}
+      <a href="{{ url_for('buyer.products', categoria=cat.slug) }}"
+         class="group flex flex-col items-center gap-3 bg-white hover:bg-forest-600 border border-gray-100 rounded-2xl p-6 shadow-sm transition-all hover:shadow-xl hover:-translate-y-1 cursor-pointer">
+        <span class="text-4xl group-hover:scale-110 transition-transform">{{ cat.icon }}</span>
+        <span class="text-sm font-semibold text-forest-700 group-hover:text-white text-center transition-colors leading-tight">
+          {{ cat.name }}
+        </span>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- ===== FEATURED PRODUCTS ===== -->
+{% if featured %}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+  <div class="flex items-center justify-between mb-6">
+    <h2 class="font-display text-2xl sm:text-3xl text-forest-700">Produtos em Destaque</h2>
+    <a href="{{ url_for('buyer.products') }}"
+       class="text-sm font-semibold text-forest-600 hover:text-harvest-500 transition-colors">
+      Ver todos →
+    </a>
+  </div>
+
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+    {% for product in featured %}
+      {% include "buyer/_product_card.html" %}
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- ===== CTA SELLER BANNER ===== -->
+{% if not current_user.is_authenticated or current_user.is_buyer %}
+<section class="bg-earth-500 text-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12 flex flex-col sm:flex-row items-center justify-between gap-6">
+    <div>
+      <h2 class="font-display text-2xl font-bold mb-1">É fornecedor ou produtor?</h2>
+      <p class="text-earth-100">Registe a sua loja e alcance milhares de agricultores por todo o país.</p>
+    </div>
+    <a href="{{ url_for('auth.register') }}"
+       class="flex-shrink-0 inline-flex items-center gap-2 bg-white text-earth-600 hover:bg-earth-50 font-bold px-8 py-3.5 rounded-full transition-all shadow">
+      🚀 Começar a vender
+    </a>
+  </div>
+</section>
+{% endif %}
+
+{% endblock %}
