@@ -3,201 +3,413 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{% block title %}AgroMercado Angola{% endblock %}</title>
+  <title>{% block title %}AgroMercado — O Mercado Agrícola de Angola{% endblock %}</title>
 
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            forest:  { DEFAULT: '#1a4a1a', 50: '#f0f7f0', 100: '#d6ebd6', 200: '#aed4ae', 300: '#7bb87b', 400: '#4e9a4e', 500: '#2d7a2d', 600: '#1a4a1a', 700: '#143d14', 800: '#0f2f0f', 900: '#0a200a' },
-            earth:   { DEFAULT: '#8b5e3c', 50: '#faf5f0', 100: '#f0e0cf', 200: '#dbb898', 300: '#c49065', 400: '#b07040', 500: '#8b5e3c', 600: '#6d4a2f', 700: '#533825', 800: '#3d291b', 900: '#281c12' },
-            harvest: { DEFAULT: '#d4a017', 50: '#fdfaed', 100: '#f9f0c2', 200: '#f3e082', 300: '#ecce42', 400: '#e3b81a', 500: '#d4a017', 600: '#a87c12', 700: '#7e5d0e', 800: '#5a430a', 900: '#3b2c07' },
-            sky:     { DEFAULT: '#1a6b8a', light: '#e8f4f8' },
+            brand: {
+              50:  '#f0fdf4', 100: '#dcfce7', 200: '#bbf7d0',
+              300: '#86efac', 400: '#4ade80', 500: '#22c55e',
+              600: '#16a34a', 700: '#15803d', 800: '#166534', 900: '#14532d',
+              950: '#052e16'
+            },
+            gold: {
+              300: '#fcd34d', 400: '#fbbf24', 500: '#f59e0b',
+              600: '#d97706', 700: '#b45309'
+            },
+            dark: '#0a0f0a',
+            surface: '#111711',
           },
           fontFamily: {
-            display: ['"Playfair Display"', 'Georgia', 'serif'],
-            body:    ['"Source Sans 3"', 'sans-serif'],
+            sans:    ['"DM Sans"', 'sans-serif'],
+            display: ['"Fraunces"', 'Georgia', 'serif'],
+            mono:    ['"DM Mono"', 'monospace'],
           },
+          boxShadow: {
+            'glow':    '0 0 40px rgba(34,197,94,0.15)',
+            'glow-lg': '0 0 80px rgba(34,197,94,0.2)',
+            'card':    '0 2px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.06)',
+            'card-hover': '0 12px 40px rgba(0,0,0,0.14), 0 4px 12px rgba(0,0,0,0.08)',
+          },
+          backgroundImage: {
+            'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+          }
         }
       }
     }
   </script>
 
-  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;0,700;0,800;1,600&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <style>
-    body { font-family: 'Source Sans 3', sans-serif; }
-    h1,h2,h3,.font-display { font-family: 'Playfair Display', Georgia, serif; }
-
-    /* Flash message slide-in */
-    .flash-alert { animation: slideDown .35s ease both; }
-    @keyframes slideDown {
-      from { opacity:0; transform:translateY(-12px); }
-      to   { opacity:1; transform:translateY(0);     }
+    :root {
+      --brand: #22c55e;
+      --brand-dark: #15803d;
+      --gold: #f59e0b;
+      --surface: #111711;
+      --surface-2: #181f18;
+      --surface-3: #1f281f;
+      --border: rgba(255,255,255,0.07);
+      --text-muted: rgba(255,255,255,0.45);
     }
 
-    /* Card hover lift */
-    .product-card { transition: transform .2s ease, box-shadow .2s ease; }
-    .product-card:hover { transform:translateY(-4px); box-shadow:0 12px 32px rgba(0,0,0,.12); }
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #0d120d;
+      color: #e8f0e8;
+      min-height: 100vh;
+    }
 
-    /* Subtle texture overlay on hero */
-    .hero-texture {
-      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--surface); }
+    ::-webkit-scrollbar-thumb { background: var(--brand-dark); border-radius: 3px; }
+
+    /* Glass card */
+    .glass {
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+    }
+
+    /* Product card */
+    .product-card {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      transition: transform 0.25s cubic-bezier(.34,1.56,.64,1), box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+    .product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(34,197,94,0.2);
+      border-color: rgba(34,197,94,0.3);
+    }
+    .product-card:hover .card-img { transform: scale(1.06); }
+    .card-img { transition: transform 0.4s cubic-bezier(.25,.46,.45,.94); }
+
+    /* Shimmer */
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+    .shimmer {
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.06) 50%, transparent 100%);
+      background-size: 200% 100%;
+      animation: shimmer 2s infinite;
+    }
+
+    /* Flash */
+    .flash-in { animation: flashIn .4s cubic-bezier(.34,1.56,.64,1) both; }
+    @keyframes flashIn {
+      from { opacity:0; transform:translateY(-16px) scale(.96); }
+      to   { opacity:1; transform:translateY(0) scale(1); }
+    }
+
+    /* Nav link */
+    .nav-link {
+      position: relative;
+      color: rgba(255,255,255,0.65);
+      transition: color .2s;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0; right: 0;
+      height: 2px;
+      background: var(--brand);
+      transform: scaleX(0);
+      transition: transform .25s cubic-bezier(.34,1.56,.64,1);
+      border-radius: 1px;
+    }
+    .nav-link:hover { color: #fff; }
+    .nav-link:hover::after { transform: scaleX(1); }
+
+    /* Btn primary */
+    .btn-primary {
+      background: var(--brand);
+      color: #052e16;
+      font-weight: 700;
+      border-radius: 100px;
+      transition: all .2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: white;
+      opacity: 0;
+      transition: opacity .2s;
+    }
+    .btn-primary:hover::before { opacity: .08; }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(34,197,94,0.35); }
+    .btn-primary:active { transform: translateY(0); }
+
+    /* Btn outline */
+    .btn-outline {
+      border: 1.5px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.8);
+      border-radius: 100px;
+      transition: all .2s;
+    }
+    .btn-outline:hover {
+      border-color: var(--brand);
+      color: var(--brand);
+      background: rgba(34,197,94,0.06);
+    }
+
+    /* Input */
+    .input-dark {
+      background: rgba(255,255,255,0.05);
+      border: 1.5px solid rgba(255,255,255,0.1);
+      color: white;
+      border-radius: 14px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .input-dark::placeholder { color: rgba(255,255,255,0.3); }
+    .input-dark:focus {
+      outline: none;
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px rgba(34,197,94,0.12);
+    }
+
+    /* Tag pill */
+    .tag {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .03em;
+      padding: 3px 10px;
+      border-radius: 100px;
+      background: rgba(34,197,94,0.12);
+      color: #4ade80;
+      border: 1px solid rgba(34,197,94,0.2);
+    }
+
+    /* Noise overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: .4;
+    }
+
+    /* Category card */
+    .cat-card {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      transition: all .25s cubic-bezier(.34,1.56,.64,1);
+    }
+    .cat-card:hover {
+      background: var(--surface-3);
+      border-color: rgba(34,197,94,0.3);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.3), 0 0 0 1px rgba(34,197,94,0.15);
+    }
+
+    /* Search dropdown */
+    #search-dropdown, #search-dropdown-mobile {
+      background: #1a221a;
+      border: 1px solid rgba(34,197,94,0.2);
+      border-radius: 16px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+    }
+
+    /* Page fade in */
+    main { animation: pageFade .4s ease both; }
+    @keyframes pageFade {
+      from { opacity:0; transform:translateY(8px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    /* Gradient text */
+    .gradient-text {
+      background: linear-gradient(135deg, #4ade80 0%, #22c55e 40%, #fbbf24 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Stat number */
+    .stat-num {
+      font-family: 'Fraunces', serif;
+      font-feature-settings: 'ss01';
     }
   </style>
 
   {% block head %}{% endblock %}
 </head>
-<body class="bg-forest-50 text-gray-800 min-h-screen flex flex-col">
+<body>
 
-  <!-- ===== NAVIGATION ===== -->
-  <nav class="bg-forest-600 shadow-lg sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
+<!-- ===== NAVBAR ===== -->
+<nav class="sticky top-0 z-50 border-b border-white/[0.06]" style="background:rgba(13,18,13,0.85);backdrop-filter:blur(24px);">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center h-16 gap-4">
 
-        <!-- Logo -->
-        <a href="{{ url_for('buyer.index') }}" class="flex items-center gap-2 flex-shrink-0">
-          <span class="text-2xl">🌾</span>
-          <span class="font-display text-white text-xl font-bold leading-tight">
-            Agro<span class="text-harvest-400">Mercado</span>
-          </span>
-        </a>
+      <!-- Logo -->
+      <a href="{{ url_for('buyer.index') }}" class="flex items-center gap-2.5 flex-shrink-0 mr-4">
+        <div class="w-8 h-8 rounded-xl flex items-center justify-center text-lg" style="background:linear-gradient(135deg,#22c55e,#15803d);">🌾</div>
+        <span style="font-family:'Fraunces',serif;font-size:1.15rem;font-weight:700;color:white;letter-spacing:-.01em;">
+          Agro<span style="color:#4ade80;">Mercado</span>
+        </span>
+      </a>
 
-        <!-- Desktop Search -->
-        <div class="hidden md:flex flex-1 max-w-lg mx-8 relative">
-          <input
-            id="nav-search"
-            type="text"
-            placeholder="Pesquisar produtos, rações, medicamentos…"
-            autocomplete="off"
-            class="w-full rounded-full px-5 py-2 text-sm bg-forest-700 text-white placeholder-forest-300 border border-forest-500 focus:outline-none focus:ring-2 focus:ring-harvest-400 focus:border-transparent"
-          />
-          <div id="search-dropdown"
-               class="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl shadow-xl border border-gray-100 hidden z-50 overflow-hidden">
-          </div>
+      <!-- Desktop search -->
+      <div class="hidden md:flex flex-1 max-w-md relative">
+        <div class="relative w-full">
+          <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style="color:rgba(255,255,255,.3);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <input id="nav-search" type="text" placeholder="Pesquisar produtos…" autocomplete="off"
+                 class="input-dark w-full pl-10 pr-4 py-2.5 text-sm" />
         </div>
+        <div id="search-dropdown" class="absolute top-full left-0 right-0 mt-2 hidden z-50 overflow-hidden"></div>
+      </div>
 
-        <!-- Right Nav -->
-        <div class="flex items-center gap-3">
-          {% if current_user.is_authenticated %}
-            {% if current_user.is_seller %}
-              <a href="{{ url_for('seller.dashboard') }}"
-                 class="hidden sm:inline-flex items-center gap-1 text-sm font-medium text-white hover:text-harvest-300 transition-colors">
-                📊 <span>Dashboard</span>
-              </a>
-            {% endif %}
-            <div class="relative group">
-              <button class="flex items-center gap-2 text-white text-sm font-medium hover:text-harvest-300 transition-colors">
-                <span class="w-8 h-8 rounded-full bg-harvest-500 flex items-center justify-center font-bold text-forest-900">
-                  {{ current_user.name[0].upper() }}
-                </span>
-                <span class="hidden sm:inline">{{ current_user.name.split()[0] }}</span>
-              </button>
-              <div class="absolute right-0 mt-1 w-44 bg-white rounded-xl shadow-xl border border-gray-100 hidden group-hover:block py-1 z-50">
-                {% if current_user.is_seller %}
-                  <a href="{{ url_for('seller.profile') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-forest-50">⚙ Perfil</a>
-                {% endif %}
-                <a href="{{ url_for('auth.logout') }}" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">↩ Sair</a>
-              </div>
-            </div>
-          {% else %}
-            <a href="{{ url_for('auth.login') }}"
-               class="text-sm font-medium text-forest-200 hover:text-white transition-colors">Entrar</a>
-            <a href="{{ url_for('auth.register') }}"
-               class="text-sm font-semibold bg-harvest-500 hover:bg-harvest-400 text-forest-900 px-4 py-2 rounded-full transition-colors">
-              Registar
+      <!-- Nav links desktop -->
+      <div class="hidden lg:flex items-center gap-6 ml-4">
+        <a href="{{ url_for('buyer.products') }}" class="nav-link text-sm font-medium">Produtos</a>
+        <a href="{{ url_for('buyer.products', categoria='feed') }}" class="nav-link text-sm font-medium">Rações</a>
+        <a href="{{ url_for('buyer.products', categoria='medicine') }}" class="nav-link text-sm font-medium">Medicamentos</a>
+        <a href="{{ url_for('buyer.products', categoria='equipment') }}" class="nav-link text-sm font-medium">Equipamentos</a>
+      </div>
+
+      <div class="flex-1"></div>
+
+      <!-- Right side -->
+      <div class="flex items-center gap-2">
+        {% if current_user.is_authenticated %}
+          {% if current_user.is_seller %}
+            <a href="{{ url_for('seller.dashboard') }}"
+               class="hidden sm:flex items-center gap-1.5 btn-outline text-xs font-semibold px-4 py-2">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+              Dashboard
             </a>
           {% endif %}
-        </div>
-      </div>
-
-      <!-- Mobile Search -->
-      <div class="md:hidden pb-3 relative">
-        <input
-          id="nav-search-mobile"
-          type="text"
-          placeholder="Pesquisar…"
-          autocomplete="off"
-          class="w-full rounded-full px-4 py-2 text-sm bg-forest-700 text-white placeholder-forest-300 border border-forest-500 focus:outline-none focus:ring-2 focus:ring-harvest-400"
-        />
-        <div id="search-dropdown-mobile"
-             class="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl shadow-xl border border-gray-100 hidden z-50 overflow-hidden">
-        </div>
+          <div class="relative group">
+            <button class="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full border border-white/10 hover:border-brand-500/40 transition-colors">
+              <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-dark" style="background:linear-gradient(135deg,#4ade80,#22c55e);">
+                {{ current_user.name[0].upper() }}
+              </div>
+              <span class="hidden sm:block text-sm font-medium text-white/80">{{ current_user.name.split()[0] }}</span>
+              <svg class="w-3 h-3 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="absolute right-0 mt-2 w-48 rounded-2xl hidden group-hover:block py-1.5 z-50 overflow-hidden" style="background:#1a221a;border:1px solid rgba(34,197,94,0.2);box-shadow:0 24px 64px rgba(0,0,0,.5);">
+              {% if current_user.is_seller %}
+                <a href="{{ url_for('seller.profile') }}" class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/70 hover:text-white hover:bg-white/5 transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                  Perfil
+                </a>
+              {% endif %}
+              <div class="mx-3 my-1 border-t border-white/[0.06]"></div>
+              <a href="{{ url_for('auth.logout') }}" class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/5 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                Sair
+              </a>
+            </div>
+          </div>
+        {% else %}
+          <a href="{{ url_for('auth.login') }}" class="btn-outline text-sm font-medium px-4 py-2">Entrar</a>
+          <a href="{{ url_for('auth.register') }}" class="btn-primary text-sm px-5 py-2">Registar</a>
+        {% endif %}
       </div>
     </div>
-  </nav>
 
-  <!-- ===== FLASH MESSAGES ===== -->
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      <div class="max-w-7xl mx-auto w-full px-4 pt-4 space-y-2">
-        {% for category, message in messages %}
-          {% set colors = {
-            'success': 'bg-green-50 border-green-400 text-green-800',
-            'danger':  'bg-red-50 border-red-400 text-red-800',
-            'warning': 'bg-yellow-50 border-yellow-400 text-yellow-800',
-            'info':    'bg-blue-50 border-blue-400 text-blue-800',
-          } %}
-          <div class="flash-alert flex items-start gap-3 px-4 py-3 rounded-xl border {{ colors.get(category, 'bg-gray-50 border-gray-400 text-gray-800') }}">
-            <span class="flex-1 text-sm font-medium">{{ message }}</span>
-            <button onclick="this.parentElement.remove()" class="text-lg leading-none opacity-60 hover:opacity-100">×</button>
-          </div>
-        {% endfor %}
+    <!-- Mobile search -->
+    <div class="md:hidden pb-3 relative">
+      <div class="relative">
+        <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style="color:rgba(255,255,255,.3);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <input id="nav-search-mobile" type="text" placeholder="Pesquisar…" autocomplete="off"
+               class="input-dark w-full pl-10 pr-4 py-2.5 text-sm" />
       </div>
-    {% endif %}
-  {% endwith %}
+      <div id="search-dropdown-mobile" class="absolute top-full left-0 right-0 mt-2 hidden z-50 overflow-hidden mx-0"></div>
+    </div>
+  </div>
+</nav>
 
-  <!-- ===== MAIN ===== -->
-  <main class="flex-1">
-    {% block content %}{% endblock %}
-  </main>
+<!-- ===== FLASH MESSAGES ===== -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="max-w-7xl mx-auto w-full px-4 pt-4 space-y-2 relative z-40">
+      {% for category, message in messages %}
+        {% set styles = {
+          'success': 'border-green-500/30 bg-green-500/10 text-green-300',
+          'danger':  'border-red-500/30 bg-red-500/10 text-red-300',
+          'warning': 'border-yellow-500/30 bg-yellow-500/10 text-yellow-300',
+          'info':    'border-blue-500/30 bg-blue-500/10 text-blue-300',
+        } %}
+        <div class="flash-in flex items-center gap-3 px-4 py-3 rounded-2xl border text-sm font-medium {{ styles.get(category, 'border-white/10 bg-white/5 text-white/70') }}">
+          <span class="flex-1">{{ message }}</span>
+          <button onclick="this.parentElement.remove()" class="opacity-50 hover:opacity-100 text-lg leading-none transition-opacity">×</button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
 
-  <!-- ===== FOOTER ===== -->
-  <footer class="bg-forest-800 text-forest-300 mt-16">
-    <div class="max-w-7xl mx-auto px-4 py-10 sm:px-6">
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-8">
-        <div>
-          <div class="flex items-center gap-2 mb-3">
-            <span class="text-2xl">🌾</span>
-            <span class="font-display text-white text-lg">AgroMercado Angola</span>
-          </div>
-          <p class="text-sm leading-relaxed">
-            O mercado digital para pecuária e avicultura em Angola. Conectando agricultores e fornecedores.
-          </p>
+<!-- ===== MAIN ===== -->
+<main class="flex-1">{% block content %}{% endblock %}</main>
+
+<!-- ===== FOOTER ===== -->
+<footer class="mt-24 border-t border-white/[0.06]" style="background:#0a0f0a;">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-14">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
+      <div class="col-span-2 md:col-span-1">
+        <div class="flex items-center gap-2.5 mb-4">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center text-lg" style="background:linear-gradient(135deg,#22c55e,#15803d);">🌾</div>
+          <span style="font-family:'Fraunces',serif;font-weight:700;color:white;">AgroMercado</span>
         </div>
-        <div>
-          <h4 class="font-semibold text-white mb-3">Categorias</h4>
-          <ul class="space-y-1 text-sm">
-            <li><a href="{{ url_for('buyer.products', categoria='feed') }}" class="hover:text-harvest-400 transition-colors">🌾 Rações e Alimentos</a></li>
-            <li><a href="{{ url_for('buyer.products', categoria='medicine') }}" class="hover:text-harvest-400 transition-colors">💊 Medicamentos</a></li>
-            <li><a href="{{ url_for('buyer.products', categoria='equipment') }}" class="hover:text-harvest-400 transition-colors">🔧 Equipamentos</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 class="font-semibold text-white mb-3">A sua conta</h4>
-          <ul class="space-y-1 text-sm">
-            {% if current_user.is_authenticated %}
-              <li><a href="{{ url_for('auth.logout') }}" class="hover:text-harvest-400 transition-colors">Terminar sessão</a></li>
-            {% else %}
-              <li><a href="{{ url_for('auth.login') }}" class="hover:text-harvest-400 transition-colors">Entrar</a></li>
-              <li><a href="{{ url_for('auth.register') }}" class="hover:text-harvest-400 transition-colors">Criar conta</a></li>
+        <p class="text-sm leading-relaxed" style="color:rgba(255,255,255,.4);">
+          O mercado digital para pecuária e avicultura em Angola. Conectando agricultores e fornecedores.
+        </p>
+      </div>
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-widest mb-4" style="color:rgba(255,255,255,.3);">Categorias</p>
+        <ul class="space-y-2.5 text-sm" style="color:rgba(255,255,255,.5);">
+          <li><a href="{{ url_for('buyer.products', categoria='feed') }}" class="hover:text-green-400 transition-colors">🌾 Rações</a></li>
+          <li><a href="{{ url_for('buyer.products', categoria='medicine') }}" class="hover:text-green-400 transition-colors">💊 Medicamentos</a></li>
+          <li><a href="{{ url_for('buyer.products', categoria='equipment') }}" class="hover:text-green-400 transition-colors">🔧 Equipamentos</a></li>
+          <li><a href="{{ url_for('buyer.products', categoria='other') }}" class="hover:text-green-400 transition-colors">📦 Outros</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-widest mb-4" style="color:rgba(255,255,255,.3);">Conta</p>
+        <ul class="space-y-2.5 text-sm" style="color:rgba(255,255,255,.5);">
+          {% if current_user.is_authenticated %}
+            {% if current_user.is_seller %}
+              <li><a href="{{ url_for('seller.dashboard') }}" class="hover:text-green-400 transition-colors">Dashboard</a></li>
+              <li><a href="{{ url_for('seller.profile') }}" class="hover:text-green-400 transition-colors">Perfil</a></li>
             {% endif %}
-          </ul>
-        </div>
+            <li><a href="{{ url_for('auth.logout') }}" class="hover:text-red-400 transition-colors">Sair</a></li>
+          {% else %}
+            <li><a href="{{ url_for('auth.login') }}" class="hover:text-green-400 transition-colors">Entrar</a></li>
+            <li><a href="{{ url_for('auth.register') }}" class="hover:text-green-400 transition-colors">Criar conta</a></li>
+          {% endif %}
+        </ul>
       </div>
-      <div class="border-t border-forest-700 mt-8 pt-6 text-center text-xs text-forest-500">
-        © 2024 AgroMercado Angola · Feito com ❤ para os agricultores angolanos
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-widest mb-4" style="color:rgba(255,255,255,.3);">Vendedores</p>
+        <ul class="space-y-2.5 text-sm" style="color:rgba(255,255,255,.5);">
+          <li><a href="{{ url_for('auth.register') }}" class="hover:text-green-400 transition-colors">Abrir loja</a></li>
+          <li><a href="{{ url_for('seller.dashboard') if current_user.is_authenticated and current_user.is_seller else url_for('auth.register') }}" class="hover:text-green-400 transition-colors">Gerir produtos</a></li>
+        </ul>
       </div>
     </div>
-  </footer>
+    <div class="border-t border-white/[0.06] pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <p class="text-xs" style="color:rgba(255,255,255,.25);">© 2024 AgroMercado Angola · Todos os direitos reservados</p>
+      <p class="text-xs" style="color:rgba(255,255,255,.25);">Feito com ❤ para os agricultores angolanos</p>
+    </div>
+  </div>
+</footer>
 
-  <!-- ===== GLOBAL JS ===== -->
-  <script src="{{ url_for('static', filename='js/search.js') }}"></script>
-  {% block scripts %}{% endblock %}
+<script src="{{ url_for('static', filename='js/search.js') }}"></script>
+{% block scripts %}{% endblock %}
 </body>
 </html>
