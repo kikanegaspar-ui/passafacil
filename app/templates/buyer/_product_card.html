@@ -1,0 +1,31 @@
+<article class="product-card bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden group">
+  <a href="{{ url_for('buyer.product_detail', product_id=product.id) }}" class="block">
+    <div class="relative overflow-hidden bg-forest-50 aspect-[4/3]">
+      <img src="{{ product.image }}" alt="{{ product.name }}" loading="lazy"
+           class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+           onerror="this.src='https://placehold.co/400x300/1a4a1a/ffffff?text=Produto'" />
+      {% if not product.in_stock %}
+        <div class="absolute inset-0 bg-black/50 flex items-center justify-center">
+          <span class="bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">Esgotado</span>
+        </div>
+      {% endif %}
+      <div class="absolute top-2 right-2">
+        <span class="bg-forest-700/80 backdrop-blur text-white text-xs font-medium px-2 py-0.5 rounded-full">
+          {{ product.category.icon }} {{ product.category.name }}
+        </span>
+      </div>
+    </div>
+    <div class="p-3 sm:p-4">
+      <h3 class="font-semibold text-gray-800 text-sm sm:text-base line-clamp-2 leading-snug mb-1 group-hover:text-forest-600 transition-colors">
+        {{ product.name }}
+      </h3>
+      <p class="text-xs text-gray-500 mb-2">{{ product.seller.name }}</p>
+      <div class="flex items-center justify-between mt-auto">
+        <span class="font-display font-bold text-forest-700 text-base sm:text-lg">{{ product.formatted_price }}</span>
+        {% if product.in_stock %}
+          <span class="text-xs text-green-600 font-medium bg-green-50 px-2 py-0.5 rounded-full">Em stock</span>
+        {% endif %}
+      </div>
+    </div>
+  </a>
+</article>
