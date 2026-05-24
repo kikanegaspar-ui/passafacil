@@ -1,69 +1,91 @@
 {% extends "base.html" %}
-
-{% block title %}AgroMercado Angola — Pecuária e Avicultura{% endblock %}
+{% block title %}AgroMercado — O Mercado Agrícola de Angola{% endblock %}
 
 {% block content %}
 
 <!-- ===== HERO ===== -->
-<section class="hero-texture bg-gradient-to-br from-forest-700 via-forest-600 to-forest-800 text-white">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
-    <div class="max-w-2xl">
-      <p class="text-harvest-400 font-semibold text-sm uppercase tracking-widest mb-3">
-        Mercado Digital Agrícola
-      </p>
-      <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-5">
-        Tudo para a sua<br/>
-        <span class="text-harvest-400">Pecuária</span> &
-        <span class="text-harvest-400">Avicultura</span>
-      </h1>
-      <p class="text-forest-200 text-lg mb-8 leading-relaxed">
-        Encontre rações, medicamentos veterinários e equipamentos agrícolas directamente dos melhores fornecedores em Angola.
-      </p>
-      <div class="flex flex-col sm:flex-row gap-3">
-        <a href="{{ url_for('buyer.products') }}"
-           class="inline-flex items-center justify-center gap-2 bg-harvest-500 hover:bg-harvest-400 text-forest-900 font-bold px-8 py-3.5 rounded-full transition-all hover:scale-105 shadow-lg">
-          🛒 Ver todos os produtos
+<section class="relative overflow-hidden" style="background:linear-gradient(180deg,#0d1a0d 0%,#0a0f0a 100%);">
+
+  <!-- Background glow -->
+  <div class="absolute inset-0 pointer-events-none">
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] rounded-full opacity-20"
+         style="background:radial-gradient(ellipse,#22c55e 0%,transparent 70%);filter:blur(60px);"></div>
+  </div>
+
+  <!-- Grid pattern -->
+  <div class="absolute inset-0 pointer-events-none opacity-[0.03]"
+       style="background-image:linear-gradient(rgba(255,255,255,.8) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.8) 1px,transparent 1px);background-size:60px 60px;"></div>
+
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-20 sm:pt-32 sm:pb-28 text-center">
+
+    <!-- Badge -->
+    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold mb-8"
+         style="background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.25);color:#4ade80;">
+      <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+      Mercado Digital Agrícola · Angola
+    </div>
+
+    <h1 class="font-display text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-[1.05] mb-6 tracking-tight">
+      O futuro da<br/>
+      <span class="gradient-text">agricultura angolana</span><br/>
+      começa aqui
+    </h1>
+
+    <p class="text-lg sm:text-xl max-w-2xl mx-auto mb-10 leading-relaxed" style="color:rgba(255,255,255,.55);">
+      Encontre rações, medicamentos veterinários e equipamentos agrícolas. Compre directamente dos melhores fornecedores do país.
+    </p>
+
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-3 mb-16">
+      <a href="{{ url_for('buyer.products') }}" class="btn-primary inline-flex items-center gap-2 px-7 py-3.5 text-sm">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+        Explorar produtos
+      </a>
+      {% if not current_user.is_authenticated %}
+        <a href="{{ url_for('auth.register') }}" class="btn-outline inline-flex items-center gap-2 px-7 py-3.5 text-sm font-semibold">
+          Vender no AgroMercado
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
         </a>
-        {% if not current_user.is_authenticated %}
-          <a href="{{ url_for('auth.register') }}?role=seller"
-             class="inline-flex items-center justify-center gap-2 border-2 border-forest-400 hover:border-harvest-400 hover:text-harvest-400 text-white font-semibold px-8 py-3.5 rounded-full transition-all">
-            🏪 Vender no AgroMercado
-          </a>
-        {% endif %}
+      {% endif %}
+    </div>
+
+    <!-- Stats -->
+    <div class="inline-grid grid-cols-3 divide-x rounded-2xl overflow-hidden" style="border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);">
+      <div class="px-8 py-4 text-center">
+        <div class="stat-num text-2xl font-bold text-white mb-0.5">100%</div>
+        <div class="text-xs" style="color:rgba(255,255,255,.4);">Angolano</div>
+      </div>
+      <div class="px-8 py-4 text-center" style="border-color:rgba(255,255,255,.08);">
+        <div class="stat-num text-2xl font-bold text-white mb-0.5">AOA</div>
+        <div class="text-xs" style="color:rgba(255,255,255,.4);">Kwanza</div>
+      </div>
+      <div class="px-8 py-4 text-center">
+        <div class="stat-num text-2xl font-bold text-white mb-0.5">24/7</div>
+        <div class="text-xs" style="color:rgba(255,255,255,.4);">Disponível</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== STATS STRIP ===== -->
-<div class="bg-forest-900 text-white">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 grid grid-cols-3 divide-x divide-forest-700 text-center">
-    <div class="px-4">
-      <div class="font-display text-2xl text-harvest-400 font-bold">100%</div>
-      <div class="text-xs text-forest-400 mt-0.5">Angola</div>
-    </div>
-    <div class="px-4">
-      <div class="font-display text-2xl text-harvest-400 font-bold">AOA</div>
-      <div class="text-xs text-forest-400 mt-0.5">Kwanza</div>
-    </div>
-    <div class="px-4">
-      <div class="font-display text-2xl text-harvest-400 font-bold">24/7</div>
-      <div class="text-xs text-forest-400 mt-0.5">Disponível</div>
-    </div>
-  </div>
-</div>
-
 <!-- ===== CATEGORIES ===== -->
-<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-  <h2 class="font-display text-2xl sm:text-3xl text-forest-700 mb-6">Explorar por Categoria</h2>
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <div class="flex items-end justify-between mb-8">
+    <div>
+      <p class="text-xs font-semibold uppercase tracking-widest mb-2" style="color:#4ade80;">Categorias</p>
+      <h2 class="font-display text-2xl sm:text-3xl font-bold text-white">Explorar por área</h2>
+    </div>
+    <a href="{{ url_for('buyer.products') }}" class="text-sm font-medium text-green-400 hover:text-green-300 transition-colors hidden sm:block">
+      Ver todos →
+    </a>
+  </div>
+
   <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
     {% for cat in categories %}
-      <a href="{{ url_for('buyer.products', categoria=cat.slug) }}"
-         class="group flex flex-col items-center gap-3 bg-white hover:bg-forest-600 border border-gray-100 rounded-2xl p-6 shadow-sm transition-all hover:shadow-xl hover:-translate-y-1 cursor-pointer">
-        <span class="text-4xl group-hover:scale-110 transition-transform">{{ cat.icon }}</span>
-        <span class="text-sm font-semibold text-forest-700 group-hover:text-white text-center transition-colors leading-tight">
-          {{ cat.name }}
-        </span>
+      <a href="{{ url_for('buyer.products', categoria=cat.slug) }}" class="cat-card p-6 flex flex-col items-center gap-3 text-center group">
+        <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl transition-transform group-hover:scale-110"
+             style="background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.15);">
+          {{ cat.icon }}
+        </div>
+        <span class="text-sm font-semibold text-white/80 group-hover:text-white transition-colors leading-tight">{{ cat.name }}</span>
       </a>
     {% endfor %}
   </div>
@@ -71,16 +93,16 @@
 
 <!-- ===== FEATURED PRODUCTS ===== -->
 {% if featured %}
-<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-  <div class="flex items-center justify-between mb-6">
-    <h2 class="font-display text-2xl sm:text-3xl text-forest-700">Produtos em Destaque</h2>
-    <a href="{{ url_for('buyer.products') }}"
-       class="text-sm font-semibold text-forest-600 hover:text-harvest-500 transition-colors">
-      Ver todos →
-    </a>
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+  <div class="flex items-end justify-between mb-8">
+    <div>
+      <p class="text-xs font-semibold uppercase tracking-widest mb-2" style="color:#4ade80;">Produtos</p>
+      <h2 class="font-display text-2xl sm:text-3xl font-bold text-white">Em destaque</h2>
+    </div>
+    <a href="{{ url_for('buyer.products') }}" class="text-sm font-medium text-green-400 hover:text-green-300 transition-colors">Ver todos →</a>
   </div>
 
-  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
     {% for product in featured %}
       {% include "buyer/_product_card.html" %}
     {% endfor %}
@@ -88,18 +110,27 @@
 </section>
 {% endif %}
 
-<!-- ===== CTA SELLER BANNER ===== -->
+<!-- ===== SELLER CTA ===== -->
 {% if not current_user.is_authenticated or current_user.is_buyer %}
-<section class="bg-earth-500 text-white">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12 flex flex-col sm:flex-row items-center justify-between gap-6">
-    <div>
-      <h2 class="font-display text-2xl font-bold mb-1">É fornecedor ou produtor?</h2>
-      <p class="text-earth-100">Registe a sua loja e alcance milhares de agricultores por todo o país.</p>
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+  <div class="relative rounded-3xl overflow-hidden p-10 sm:p-14 text-center"
+       style="background:linear-gradient(135deg,#14532d 0%,#15803d 50%,#166534 100%);">
+    <!-- Glow -->
+    <div class="absolute inset-0 pointer-events-none"
+         style="background:radial-gradient(ellipse at 50% 100%,rgba(34,197,94,.3) 0%,transparent 60%);"></div>
+    <div class="relative">
+      <p class="text-xs font-semibold uppercase tracking-widest mb-3 text-green-300">Para Fornecedores</p>
+      <h2 class="font-display text-3xl sm:text-4xl font-bold text-white mb-4">
+        Alcance milhares de agricultores
+      </h2>
+      <p class="text-green-200 mb-8 max-w-md mx-auto">
+        Registe a sua loja gratuitamente e comece a vender os seus produtos para agricultores em todo o país.
+      </p>
+      <a href="{{ url_for('auth.register') }}"
+         class="inline-flex items-center gap-2 bg-white text-green-800 font-bold px-8 py-3.5 rounded-full transition-all hover:bg-green-50 hover:shadow-xl text-sm">
+        🚀 Começar a vender — é grátis
+      </a>
     </div>
-    <a href="{{ url_for('auth.register') }}"
-       class="flex-shrink-0 inline-flex items-center gap-2 bg-white text-earth-600 hover:bg-earth-50 font-bold px-8 py-3.5 rounded-full transition-all shadow">
-      🚀 Começar a vender
-    </a>
   </div>
 </section>
 {% endif %}
