@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: agro-mercado-angola
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn run:app
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: FLASK_ENV
+        value: production
+      - key: PYTHON_VERSION
+        value: 3.11.9
+    disk:
+      name: agro-data
+      mountPath: /opt/render/project/src/instance
+      sizeGB: 1
