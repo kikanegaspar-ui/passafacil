@@ -1,110 +1,92 @@
 {% extends "base.html" %}
-{% block title %}Criar Conta — AgroMercado{% endblock %}
-
+{% block title %}Criar Conta — AgroCAD{% endblock %}
 {% block content %}
-<div class="min-h-[80vh] flex items-center justify-center px-4 py-12">
+<div class="min-h-[85vh] flex items-center justify-center px-4 py-16">
   <div class="w-full max-w-md">
+    <div class="text-center mb-8">
+      <svg width="52" height="52" viewBox="0 0 34 34" fill="none" class="mx-auto mb-4">
+        <rect width="34" height="34" rx="10" fill="url(#rlg)"/>
+        <path d="M10 24 L10 14 L17 10 L17 17 L13 19 L13 24Z" fill="#2a9d8f"/>
+        <path d="M17 10 L24 14 L24 24 L20 24 L20 19 L17 17Z" fill="#1a3a6b"/>
+        <path d="M13 19 L17 17 L20 19 L20 24 L13 24Z" fill="#145e57"/>
+        <path d="M17 10 C17 10 15 6 18 4 C21 2 22 5 20 7 C19 8 18 9 17 10Z" fill="#2ecc71"/>
+        <defs><linearGradient id="rlg" x1="0" y1="0" x2="34" y2="34"><stop offset="0%" stop-color="#0f1d30"/><stop offset="100%" stop-color="#162640"/></linearGradient></defs>
+      </svg>
+      <h1 style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:1.5rem;color:white;letter-spacing:-.02em;">Criar Conta</h1>
+      <p class="text-sm mt-1.5" style="color:rgba(255,255,255,.4);">Junte-se ao AgroCAD Solutions Angola</p>
+    </div>
 
-    <!-- Card -->
-    <div class="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+    <div class="rounded-2xl p-8" style="background:#0f1d30;border:1px solid rgba(255,255,255,.08);">
+      <form method="POST" action="{{ url_for('auth.register') }}" class="space-y-5" novalidate>
 
-      <!-- Header -->
-      <div class="bg-gradient-to-br from-forest-700 to-forest-800 px-8 py-8 text-center">
-        <div class="text-4xl mb-2">🌾</div>
-        <h1 class="font-display text-2xl text-white font-bold">Criar Conta</h1>
-        <p class="text-forest-300 text-sm mt-1">Junte-se ao AgroMercado Angola</p>
-      </div>
-
-      <form method="POST" action="{{ url_for('auth.register') }}" class="px-8 py-8 space-y-5" novalidate>
-
-        <!-- Account Type Toggle -->
+        <!-- Role picker -->
         <div>
-          <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
-            Tipo de conta
-          </label>
+          <label class="block text-xs font-semibold uppercase tracking-widest mb-3" style="color:rgba(255,255,255,.4);letter-spacing:.1em;">Tipo de conta</label>
           <div class="grid grid-cols-2 gap-3">
-            <label class="role-option cursor-pointer">
-              <input type="radio" name="role" value="buyer"
-                     {{ 'checked' if form.get('role','buyer') == 'buyer' }}
-                     class="sr-only peer" />
-              <div class="flex flex-col items-center gap-1 border-2 rounded-2xl py-3 px-2 text-center transition-all
-                          border-gray-200 peer-checked:border-forest-500 peer-checked:bg-forest-50">
-                <span class="text-2xl">🧑‍🌾</span>
-                <span class="text-xs font-semibold text-gray-700">Comprador / Agricultor</span>
-              </div>
-            </label>
-            <label class="role-option cursor-pointer">
-              <input type="radio" name="role" value="seller"
-                     {{ 'checked' if form.get('role') == 'seller' }}
-                     class="sr-only peer" />
-              <div class="flex flex-col items-center gap-1 border-2 rounded-2xl py-3 px-2 text-center transition-all
-                          border-gray-200 peer-checked:border-forest-500 peer-checked:bg-forest-50">
-                <span class="text-2xl">🏪</span>
-                <span class="text-xs font-semibold text-gray-700">Vendedor / Loja</span>
-              </div>
-            </label>
+            {% for role, icon, label in [('buyer','🧑‍🌾','Comprador / Agricultor'),('seller','🏪','Vendedor / Fornecedor')] %}
+              <label class="cursor-pointer">
+                <input type="radio" name="role" value="{{ role }}" {{ 'checked' if form.get('role','buyer') == role }} class="sr-only peer"/>
+                <div class="flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all text-center"
+                     style="border-color:rgba(255,255,255,.1);"
+                     data-role-card>
+                  <span class="text-2xl">{{ icon }}</span>
+                  <span class="text-xs font-semibold" style="color:rgba(255,255,255,.6);">{{ label }}</span>
+                </div>
+              </label>
+            {% endfor %}
           </div>
         </div>
 
-        <!-- Name -->
         <div>
-          <label for="name" class="block text-sm font-semibold text-gray-700 mb-1">Nome completo</label>
-          <input type="text" id="name" name="name" value="{{ form.get('name','') }}"
-                 required autocomplete="name"
-                 class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-forest-400 transition-shadow"
-                 placeholder="João Silva" />
+          <label for="name" class="block text-xs font-semibold uppercase tracking-widest mb-2" style="color:rgba(255,255,255,.4);letter-spacing:.1em;">Nome completo</label>
+          <input type="text" id="name" name="name" value="{{ form.get('name','') }}" required autocomplete="name"
+                 class="input-field" placeholder="João Silva"/>
         </div>
-
-        <!-- Email -->
         <div>
-          <label for="email" class="block text-sm font-semibold text-gray-700 mb-1">E-mail</label>
-          <input type="email" id="email" name="email" value="{{ form.get('email','') }}"
-                 required autocomplete="email"
-                 class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-forest-400 transition-shadow"
-                 placeholder="joao@exemplo.ao" />
+          <label for="email" class="block text-xs font-semibold uppercase tracking-widest mb-2" style="color:rgba(255,255,255,.4);letter-spacing:.1em;">E-mail</label>
+          <input type="email" id="email" name="email" value="{{ form.get('email','') }}" required autocomplete="email"
+                 class="input-field" placeholder="joao@exemplo.ao"/>
         </div>
-
-        <!-- Phone (WhatsApp) -->
         <div>
-          <label for="phone" class="block text-sm font-semibold text-gray-700 mb-1">
-            WhatsApp
-            <span class="font-normal text-gray-400">(vendedores: obrigatório)</span>
+          <label for="phone" class="block text-xs font-semibold uppercase tracking-widest mb-2" style="color:rgba(255,255,255,.4);letter-spacing:.1em;">
+            WhatsApp <span class="normal-case font-normal" style="color:rgba(255,255,255,.25);">(obrigatório para vendedores)</span>
           </label>
-          <input type="tel" id="phone" name="phone" value="{{ form.get('phone','') }}"
-                 autocomplete="tel"
-                 class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-forest-400 transition-shadow"
-                 placeholder="+244 9XX XXX XXX" />
+          <input type="tel" id="phone" name="phone" value="{{ form.get('phone','') }}" autocomplete="tel"
+                 class="input-field" placeholder="+244 9XX XXX XXX"/>
         </div>
-
-        <!-- Password -->
         <div>
-          <label for="password" class="block text-sm font-semibold text-gray-700 mb-1">Senha</label>
-          <input type="password" id="password" name="password"
-                 required autocomplete="new-password" minlength="6"
-                 class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-forest-400 transition-shadow"
-                 placeholder="Mínimo 6 caracteres" />
+          <label for="password" class="block text-xs font-semibold uppercase tracking-widest mb-2" style="color:rgba(255,255,255,.4);letter-spacing:.1em;">Senha</label>
+          <input type="password" id="password" name="password" required autocomplete="new-password" minlength="6"
+                 class="input-field" placeholder="Mínimo 6 caracteres"/>
         </div>
-
-        <!-- Confirm Password -->
         <div>
-          <label for="confirm_password" class="block text-sm font-semibold text-gray-700 mb-1">Confirmar senha</label>
-          <input type="password" id="confirm_password" name="confirm_password"
-                 required autocomplete="new-password"
-                 class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-forest-400 transition-shadow"
-                 placeholder="Repetir senha" />
+          <label for="confirm_password" class="block text-xs font-semibold uppercase tracking-widest mb-2" style="color:rgba(255,255,255,.4);letter-spacing:.1em;">Confirmar senha</label>
+          <input type="password" id="confirm_password" name="confirm_password" required autocomplete="new-password"
+                 class="input-field" placeholder="Repetir senha"/>
         </div>
 
-        <button type="submit"
-                class="w-full bg-forest-600 hover:bg-forest-700 active:bg-forest-800 text-white font-bold py-3.5 rounded-xl transition-colors shadow-md mt-2">
-          Criar conta
-        </button>
-
-        <p class="text-center text-sm text-gray-500">
+        <button type="submit" class="btn-primary w-full py-3.5 mt-2">Criar conta gratuitamente</button>
+        <p class="text-center text-sm" style="color:rgba(255,255,255,.38);">
           Já tem conta?
-          <a href="{{ url_for('auth.login') }}" class="text-forest-600 font-semibold hover:underline">Entrar</a>
+          <a href="{{ url_for('auth.login') }}" class="font-semibold" style="color:#5ecec4;" onmouseover="this.style.color='#2a9d8f';" onmouseout="this.style.color='#5ecec4';">Entrar</a>
         </p>
       </form>
     </div>
   </div>
 </div>
+<script>
+  // Highlight selected role card
+  document.querySelectorAll('input[name="role"]').forEach(radio => {
+    const card = radio.nextElementSibling;
+    function update() {
+      document.querySelectorAll('input[name="role"]').forEach(r => {
+        const c = r.nextElementSibling;
+        c.style.borderColor = r.checked ? '#2a9d8f' : 'rgba(255,255,255,.1)';
+        c.style.background  = r.checked ? 'rgba(42,157,143,.1)' : '';
+      });
+    }
+    radio.addEventListener('change', update);
+    update();
+  });
+</script>
 {% endblock %}
