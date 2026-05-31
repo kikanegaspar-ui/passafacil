@@ -1,135 +1,128 @@
 {% extends "base.html" %}
-{% block title %}Dashboard do Vendedor — AgroMercado{% endblock %}
+{% block title %}Dashboard — AgroCAD{% endblock %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
   <!-- Header -->
-  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5 mb-10">
     <div>
-      <h1 class="font-display text-2xl sm:text-3xl text-forest-700">
-        Olá, {{ current_user.name.split()[0] }}! 👋
+      <p class="text-xs font-semibold uppercase tracking-widest mb-1" style="color:#2a9d8f;letter-spacing:.1em;">Painel de Controlo</p>
+      <h1 style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:1.75rem;color:white;letter-spacing:-.02em;">
+        Olá, {{ current_user.name.split()[0] }} 👋
       </h1>
-      <p class="text-gray-500 text-sm mt-0.5">Gerir o seu catálogo de produtos</p>
     </div>
-    <a href="{{ url_for('seller.create_product') }}"
-       class="inline-flex items-center gap-2 bg-forest-600 hover:bg-forest-700 text-white font-bold px-6 py-3 rounded-xl transition-colors shadow-md">
-      <span class="text-lg">+</span> Novo Produto
+    <a href="{{ url_for('seller.create_product') }}" class="btn-primary px-6 py-3 text-sm">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Novo Produto
     </a>
   </div>
 
   <!-- Stats -->
   <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
-    <div class="bg-white border border-gray-100 rounded-2xl shadow-sm p-5">
-      <p class="text-xs text-gray-500 uppercase font-semibold tracking-wide mb-1">Total Produtos</p>
-      <p class="font-display text-3xl font-bold text-forest-700">{{ products | length }}</p>
-    </div>
-    <div class="bg-white border border-gray-100 rounded-2xl shadow-sm p-5">
-      <p class="text-xs text-gray-500 uppercase font-semibold tracking-wide mb-1">Activos</p>
-      <p class="font-display text-3xl font-bold text-green-600">{{ active_count }}</p>
-    </div>
-    <div class="bg-white border border-gray-100 rounded-2xl shadow-sm p-5 col-span-2 sm:col-span-1">
-      <p class="text-xs text-gray-500 uppercase font-semibold tracking-wide mb-1">Total em Stock</p>
-      <p class="font-display text-3xl font-bold text-harvest-500">{{ total_stock }}</p>
-    </div>
+    {% for label, value, color, icon_path in [
+      ('Total Produtos', products|length, '#dce8f5', 'M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zM16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16'),
+      ('Activos', active_count, '#5ecec4', 'M9 12l2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0'),
+      ('Total Stock', total_stock, '#fbbf24', 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4'),
+    ] %}
+      <div class="rounded-2xl p-5 {% if loop.last %}col-span-2 sm:col-span-1{% endif %}" style="background:#0f1d30;border:1px solid rgba(255,255,255,.07);">
+        <div class="flex items-start justify-between mb-3">
+          <p class="text-xs font-semibold uppercase tracking-widest" style="color:rgba(255,255,255,.28);letter-spacing:.08em;">{{ label }}</p>
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:rgba(42,157,143,.1);">
+            <svg class="w-4 h-4" style="color:#2a9d8f;" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path d="{{ icon_path }}"/></svg>
+          </div>
+        </div>
+        <p style="font-family:'Plus Jakarta Sans',sans-serif;font-size:2rem;font-weight:800;color:{{ color }};letter-spacing:-.02em;">{{ value }}</p>
+      </div>
+    {% endfor %}
   </div>
 
   <!-- WhatsApp warning -->
   {% if not current_user.phone %}
-    <div class="bg-amber-50 border border-amber-300 rounded-2xl px-5 py-4 mb-6 flex items-start gap-3">
-      <span class="text-2xl">⚠️</span>
+    <div class="flex items-start gap-3.5 px-5 py-4 rounded-xl mb-6" style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);">
+      <svg class="w-5 h-5 flex-shrink-0 mt-0.5" style="color:#fbbf24;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
       <div>
-        <p class="font-semibold text-amber-800 text-sm">Número WhatsApp não configurado</p>
-        <p class="text-amber-700 text-sm mt-0.5">
-          Adicione o seu número de WhatsApp no
-          <a href="{{ url_for('seller.profile') }}" class="font-bold underline">Perfil</a>
-          para que os compradores possam contactá-lo directamente.
+        <p class="font-semibold text-sm" style="color:#fcd34d;">Número WhatsApp não configurado</p>
+        <p class="text-sm mt-0.5" style="color:rgba(252,211,77,.55);">
+          Adicione no <a href="{{ url_for('seller.profile') }}" class="underline font-semibold" style="color:#fbbf24;">Perfil</a> para receber contactos dos compradores.
         </p>
       </div>
     </div>
   {% endif %}
 
-  <!-- Products Table -->
+  <!-- Products table -->
   {% if products %}
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+    <div class="rounded-2xl overflow-hidden" style="background:#0f1d30;border:1px solid rgba(255,255,255,.07);">
       <div class="overflow-x-auto">
-        <table class="w-full text-sm">
-          <thead class="bg-forest-50 text-forest-700 text-xs uppercase tracking-wide font-semibold">
-            <tr>
-              <th class="text-left px-5 py-3">Produto</th>
-              <th class="text-left px-4 py-3 hidden sm:table-cell">Categoria</th>
-              <th class="text-right px-4 py-3">Preço (AOA)</th>
-              <th class="text-right px-4 py-3 hidden md:table-cell">Stock</th>
-              <th class="text-center px-4 py-3">Estado</th>
-              <th class="text-right px-5 py-3">Acções</th>
+        <table class="w-full text-sm" role="table">
+          <thead>
+            <tr style="border-bottom:1px solid rgba(255,255,255,.06);">
+              <th class="text-left px-5 py-3.5 text-xs font-semibold uppercase tracking-widest" style="color:rgba(255,255,255,.28);">Produto</th>
+              <th class="text-left px-4 py-3.5 text-xs font-semibold uppercase tracking-widest hidden sm:table-cell" style="color:rgba(255,255,255,.28);">Categoria</th>
+              <th class="text-right px-4 py-3.5 text-xs font-semibold uppercase tracking-widest hidden sm:table-cell" style="color:rgba(255,255,255,.28);">Preço</th>
+              <th class="text-right px-4 py-3.5 text-xs font-semibold uppercase tracking-widest hidden md:table-cell" style="color:rgba(255,255,255,.28);">Stock</th>
+              <th class="text-center px-4 py-3.5 text-xs font-semibold uppercase tracking-widest" style="color:rgba(255,255,255,.28);">Estado</th>
+              <th class="text-right px-5 py-3.5 text-xs font-semibold uppercase tracking-widest" style="color:rgba(255,255,255,.28);">Acções</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-gray-50">
+          <tbody>
             {% for product in products %}
-              <tr class="hover:bg-gray-50 transition-colors" id="row-{{ product.id }}">
-                <!-- Product info -->
+              <tr class="table-row" id="row-{{ product.id }}">
                 <td class="px-5 py-4">
                   <div class="flex items-center gap-3">
-                    <img src="{{ product.image }}"
-                         alt="{{ product.name }}"
-                         class="w-10 h-10 rounded-xl object-cover flex-shrink-0 bg-gray-100"
-                         onerror="this.src='https://placehold.co/40x40/1a4a1a/fff?text=P'" />
+                    <img src="{{ product.image }}" alt="{{ product.name }}"
+                         class="w-10 h-10 rounded-xl object-cover flex-shrink-0"
+                         style="background:#162640;"
+                         onerror="this.src='https://placehold.co/40x40/0f1d30/2a9d8f?text=P'"/>
                     <div class="min-w-0">
-                      <p class="font-semibold text-gray-800 truncate max-w-[180px]">{{ product.name }}</p>
-                      <p class="text-xs text-gray-400 truncate max-w-[180px]">
-                        {{ product.description[:50] ~ '…' if product.description and product.description|length > 50 else product.description or '' }}
-                      </p>
+                      <p class="font-medium truncate max-w-[180px]" style="color:rgba(255,255,255,.8);">{{ product.name }}</p>
+                      <p class="text-xs truncate hidden sm:hidden" style="color:rgba(255,255,255,.35);">{{ product.formatted_price }}</p>
                     </div>
                   </div>
                 </td>
-                <!-- Category -->
                 <td class="px-4 py-4 hidden sm:table-cell">
-                  <span class="text-xs bg-forest-50 text-forest-700 px-2 py-1 rounded-full font-medium">
-                    {{ product.category.icon }} {{ product.category.name }}
-                  </span>
+                  <span class="badge">{{ product.category.icon }} {{ product.category.name }}</span>
                 </td>
-                <!-- Price -->
-                <td class="px-4 py-4 text-right font-semibold text-forest-700">
-                  {{ product.formatted_price }}
+                <td class="px-4 py-4 text-right hidden sm:table-cell">
+                  <span style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;color:#5ecec4;">{{ product.formatted_price }}</span>
                 </td>
-                <!-- Stock -->
                 <td class="px-4 py-4 text-right hidden md:table-cell">
-                  <span class="{{ 'text-red-500 font-bold' if product.stock == 0 else 'text-gray-700' }}">
+                  <span class="{{ 'font-bold' if product.stock == 0 else '' }}"
+                        style="font-family:'JetBrains Mono',monospace;font-size:.875rem;color:{{ 'rgba(239,68,68,.9)' if product.stock == 0 else 'rgba(255,255,255,.55)' }};">
                     {{ product.stock }}
                   </span>
                 </td>
-                <!-- Toggle status -->
                 <td class="px-4 py-4 text-center">
-                  <button
-                    onclick="toggleProduct({{ product.id }}, this)"
-                    class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none
-                           {{ 'bg-green-500' if product.is_active else 'bg-gray-300' }}"
-                    title="{{ 'Desactivar' if product.is_active else 'Activar' }}"
-                    data-active="{{ 'true' if product.is_active else 'false' }}"
-                  >
-                    <span class="inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform
-                                 {{ 'translate-x-6' if product.is_active else 'translate-x-1' }}"></span>
+                  <button onclick="toggleProduct({{ product.id }}, this)"
+                          class="toggle {{ 'on' if product.is_active else 'off' }}"
+                          data-active="{{ 'true' if product.is_active else 'false' }}"
+                          aria-label="Activar/desactivar produto"
+                          title="{{ 'Desactivar' if product.is_active else 'Activar' }}">
+                    <span class="toggle-knob"></span>
                   </button>
                 </td>
-                <!-- Actions -->
-                <td class="px-5 py-4 text-right">
-                  <div class="flex items-center justify-end gap-2">
-                    <a href="{{ url_for('buyer.product_detail', product_id=product.id) }}"
-                       target="_blank"
-                       class="text-xs text-gray-500 hover:text-forest-600 transition-colors p-1.5 rounded-lg hover:bg-forest-50"
-                       title="Ver produto">
-                      👁
+                <td class="px-5 py-4">
+                  <div class="flex items-center justify-end gap-1">
+                    <a href="{{ url_for('buyer.product_detail', product_id=product.id) }}" target="_blank"
+                       class="p-2 rounded-lg transition-colors" title="Ver no marketplace"
+                       style="color:rgba(255,255,255,.3);"
+                       onmouseover="this.style.color='white';this.style.background='rgba(255,255,255,.06)';"
+                       onmouseout="this.style.color='rgba(255,255,255,.3)';this.style.background='';">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                     </a>
                     <a href="{{ url_for('seller.edit_product', product_id=product.id) }}"
-                       class="text-xs text-blue-600 hover:text-blue-800 transition-colors p-1.5 rounded-lg hover:bg-blue-50"
-                       title="Editar">
-                      ✏️
+                       class="p-2 rounded-lg transition-colors" title="Editar"
+                       style="color:rgba(255,255,255,.3);"
+                       onmouseover="this.style.color='#7aa3d4';this.style.background='rgba(26,58,107,.25)';"
+                       onmouseout="this.style.color='rgba(255,255,255,.3)';this.style.background='';">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                     </a>
-                    <button
-                      onclick="deleteProduct({{ product.id }}, '{{ product.name | e }}')"
-                      class="text-xs text-red-500 hover:text-red-700 transition-colors p-1.5 rounded-lg hover:bg-red-50"
-                      title="Eliminar">
-                      🗑
+                    <button onclick="deleteProduct({{ product.id }}, '{{ product.name | e }}')"
+                            class="p-2 rounded-lg transition-colors" title="Eliminar"
+                            style="color:rgba(255,255,255,.3);"
+                            onmouseover="this.style.color='#fca5a5';this.style.background='rgba(239,68,68,.1)';"
+                            onmouseout="this.style.color='rgba(255,255,255,.3)';this.style.background='';">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><polyline points="3,6 5,6 21,6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
                     </button>
                   </div>
                 </td>
@@ -140,39 +133,38 @@
       </div>
     </div>
   {% else %}
-    <!-- Empty state -->
-    <div class="text-center py-20 bg-white rounded-2xl border border-gray-100 shadow-sm">
-      <div class="text-6xl mb-4">📦</div>
-      <h3 class="font-display text-xl text-forest-700 mb-2">Ainda não tem produtos</h3>
-      <p class="text-gray-500 mb-6">Adicione o seu primeiro produto para começar a vender.</p>
-      <a href="{{ url_for('seller.create_product') }}"
-         class="inline-flex items-center gap-2 bg-forest-600 hover:bg-forest-700 text-white font-bold px-8 py-3.5 rounded-xl transition-colors">
-        + Adicionar Produto
+    <div class="text-center py-24 rounded-2xl" style="background:#0f1d30;border:1px solid rgba(255,255,255,.07);">
+      <div class="w-16 h-16 rounded-2xl mx-auto mb-5 flex items-center justify-center" style="background:rgba(42,157,143,.1);border:1px solid rgba(42,157,143,.2);">
+        <svg class="w-7 h-7" style="color:#2a9d8f;" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zM16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+      </div>
+      <h3 style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:1.125rem;color:white;" class="mb-2">Sem produtos ainda</h3>
+      <p class="text-sm mb-8" style="color:rgba(255,255,255,.38);">Adicione o seu primeiro produto para começar a vender.</p>
+      <a href="{{ url_for('seller.create_product') }}" class="btn-primary px-7 py-3 text-sm">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Adicionar Produto
       </a>
     </div>
   {% endif %}
 </div>
 
-<!-- Delete Confirmation Modal -->
-<div id="delete-modal"
-     class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
-  <div class="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-8 text-center">
-    <div class="text-5xl mb-4">⚠️</div>
-    <h3 class="font-display text-xl font-bold text-gray-800 mb-2">Eliminar produto?</h3>
-    <p id="delete-modal-text" class="text-gray-500 text-sm mb-6"></p>
+<!-- Delete Modal -->
+<div id="delete-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background:rgba(0,0,0,.75);backdrop-filter:blur(8px);">
+  <div class="w-full max-w-sm rounded-2xl p-8 text-center" style="background:#0f1d30;border:1px solid rgba(255,255,255,.1);box-shadow:0 32px 80px rgba(0,0,0,.7);">
+    <div class="w-14 h-14 rounded-2xl mx-auto mb-5 flex items-center justify-center" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);">
+      <svg class="w-6 h-6" style="color:#fca5a5;" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><polyline points="3,6 5,6 21,6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+    </div>
+    <h3 style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:1.125rem;color:white;" class="mb-2">Eliminar produto?</h3>
+    <p id="delete-modal-text" class="text-sm mb-8" style="color:rgba(255,255,255,.45);"></p>
     <div class="flex gap-3">
-      <button onclick="closeDeleteModal()"
-              class="flex-1 border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold py-3 rounded-xl transition-colors">
-        Cancelar
-      </button>
-      <button id="confirm-delete-btn"
-              class="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl transition-colors">
+      <button onclick="closeDeleteModal()" class="flex-1 btn-secondary py-3 text-sm">Cancelar</button>
+      <button id="confirm-delete-btn" class="flex-1 py-3 text-sm font-semibold rounded-xl transition-all"
+              style="background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#fca5a5;"
+              onmouseover="this.style.background='rgba(239,68,68,.25)';" onmouseout="this.style.background='rgba(239,68,68,.15)';">
         Eliminar
       </button>
     </div>
   </div>
 </div>
-
 {% endblock %}
 
 {% block scripts %}
