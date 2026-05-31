@@ -1,128 +1,93 @@
 {% extends "base.html" %}
-
-{% block title %}
-  {{ 'Editar Produto' if product else 'Novo Produto' }} — AgroMercado
-{% endblock %}
+{% block title %}{{ 'Editar' if product else 'Novo Produto' }} — AgroMercado{% endblock %}
 
 {% block content %}
 <div class="max-w-2xl mx-auto px-4 sm:px-6 py-10">
 
-  <!-- Back link -->
-  <a href="{{ url_for('seller.dashboard') }}"
-     class="inline-flex items-center gap-2 text-sm text-forest-600 hover:text-forest-800 transition-colors mb-6">
-    ← Voltar ao Dashboard
+  <a href="{{ url_for('seller.dashboard') }}" class="inline-flex items-center gap-2 text-sm mb-8 transition-colors"
+     style="color:rgba(255,255,255,.4);" onmouseover="this.style.color='#4ade80';" onmouseout="this.style.color='rgba(255,255,255,.4)';">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+    Voltar ao Dashboard
   </a>
 
-  <div class="bg-white rounded-3xl shadow-md border border-gray-100 overflow-hidden">
+  <div class="mb-8">
+    <p class="text-xs font-semibold uppercase tracking-widest mb-1" style="color:#4ade80;">{{ 'Editar' if product else 'Novo' }}</p>
+    <h1 class="font-display text-2xl sm:text-3xl font-bold text-white">
+      {{ 'Editar Produto' if product else 'Adicionar Produto' }}
+    </h1>
+  </div>
 
-    <!-- Card header -->
-    <div class="bg-gradient-to-r from-forest-700 to-forest-600 px-8 py-6">
-      <h1 class="font-display text-2xl text-white font-bold">
-        {{ '✏️ Editar Produto' if product else '+ Novo Produto' }}
-      </h1>
-      <p class="text-forest-300 text-sm mt-1">
-        {{ 'Actualizar as informações do produto.' if product else 'Preencha os dados do produto para publicar no mercado.' }}
-      </p>
-    </div>
+  <div class="rounded-3xl p-8" style="background:#111711;border:1px solid rgba(255,255,255,.08);">
+    <form method="POST" class="space-y-6" novalidate>
 
-    <form method="POST" class="px-8 py-8 space-y-6" novalidate>
-
-      <!-- Name -->
       <div>
-        <label for="name" class="block text-sm font-semibold text-gray-700 mb-1.5">
-          Nome do Produto <span class="text-red-500">*</span>
-        </label>
+        <label for="name" class="block text-xs font-semibold uppercase tracking-wide mb-2" style="color:rgba(255,255,255,.5);">Nome do Produto *</label>
         <input type="text" id="name" name="name"
                value="{{ product.name if product else form.get('name','') }}"
                required maxlength="200"
-               class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-forest-400 transition-shadow"
+               class="input-dark w-full px-4 py-3 text-sm"
                placeholder="Ex: Ração para galinhas poedeiras 25kg" />
       </div>
 
-      <!-- Category -->
       <div>
-        <label for="category_id" class="block text-sm font-semibold text-gray-700 mb-1.5">
-          Categoria <span class="text-red-500">*</span>
-        </label>
+        <label for="category_id" class="block text-xs font-semibold uppercase tracking-wide mb-2" style="color:rgba(255,255,255,.5);">Categoria *</label>
         <select id="category_id" name="category_id" required
-                class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-forest-400 transition-shadow bg-white">
-          <option value="">-- Seleccionar categoria --</option>
+                class="input-dark w-full px-4 py-3 text-sm">
+          <option value="">-- Seleccionar --</option>
           {% for cat in categories %}
-            <option value="{{ cat.id }}"
-              {{ 'selected' if (product and product.category_id == cat.id) or (form.get('category_id')|int == cat.id) }}>
+            <option value="{{ cat.id }}" {{ 'selected' if (product and product.category_id == cat.id) or (form.get('category_id')|int == cat.id) }}>
               {{ cat.icon }} {{ cat.name }}
             </option>
           {% endfor %}
         </select>
       </div>
 
-      <!-- Price + Stock -->
       <div class="grid grid-cols-2 gap-4">
         <div>
-          <label for="price_aoa" class="block text-sm font-semibold text-gray-700 mb-1.5">
-            Preço (AOA / Kz) <span class="text-red-500">*</span>
-          </label>
+          <label for="price_aoa" class="block text-xs font-semibold uppercase tracking-wide mb-2" style="color:rgba(255,255,255,.5);">Preço (Kz) *</label>
           <div class="relative">
-            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-medium">Kz</span>
+            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-xs font-bold" style="color:rgba(255,255,255,.3);">Kz</span>
             <input type="number" id="price_aoa" name="price_aoa" min="1" step="0.01"
-                   value="{{ product.price_aoa if product else form.get('price_aoa','') }}"
-                   required
-                   class="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-forest-400 transition-shadow"
-                   placeholder="0.00" />
+                   value="{{ product.price_aoa if product else form.get('price_aoa','') }}" required
+                   class="input-dark w-full pl-9 pr-4 py-3 text-sm" placeholder="0.00" />
           </div>
         </div>
         <div>
-          <label for="stock" class="block text-sm font-semibold text-gray-700 mb-1.5">
-            Quantidade em Stock <span class="text-red-500">*</span>
-          </label>
+          <label for="stock" class="block text-xs font-semibold uppercase tracking-wide mb-2" style="color:rgba(255,255,255,.5);">Stock *</label>
           <input type="number" id="stock" name="stock" min="0"
-                 value="{{ product.stock if product else form.get('stock', 0) }}"
-                 required
-                 class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-forest-400 transition-shadow"
-                 placeholder="0" />
+                 value="{{ product.stock if product else form.get('stock', 0) }}" required
+                 class="input-dark w-full px-4 py-3 text-sm" placeholder="0" />
         </div>
       </div>
 
-      <!-- Description -->
       <div>
-        <label for="description" class="block text-sm font-semibold text-gray-700 mb-1.5">
-          Descrição
-        </label>
+        <label for="description" class="block text-xs font-semibold uppercase tracking-wide mb-2" style="color:rgba(255,255,255,.5);">Descrição</label>
         <textarea id="description" name="description" rows="4" maxlength="2000"
-                  class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-forest-400 transition-shadow resize-none"
-                  placeholder="Descreva o produto: composição, benefícios, modo de uso, quantidade…">{{ product.description if product else form.get('description','') }}</textarea>
-        <p class="text-xs text-gray-400 mt-1 text-right"><span id="char-count">0</span>/2000</p>
+                  class="input-dark w-full px-4 py-3 text-sm resize-none"
+                  placeholder="Descreva o produto: composição, benefícios, modo de uso…">{{ product.description if product else form.get('description','') }}</textarea>
+        <p class="text-xs mt-1 text-right" style="color:rgba(255,255,255,.2);"><span id="char-count">0</span>/2000</p>
       </div>
 
-      <!-- Image URL -->
       <div>
-        <label for="image_url" class="block text-sm font-semibold text-gray-700 mb-1.5">
-          URL da Imagem
-        </label>
+        <label for="image_url" class="block text-xs font-semibold uppercase tracking-wide mb-2" style="color:rgba(255,255,255,.5);">URL da Imagem</label>
         <input type="url" id="image_url" name="image_url"
                value="{{ product.image_url if product and product.image_url else form.get('image_url','') }}"
-               class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-forest-400 transition-shadow"
+               class="input-dark w-full px-4 py-3 text-sm"
                placeholder="https://exemplo.com/imagem.jpg" />
-        <!-- Preview -->
         <div id="image-preview-box" class="mt-3 hidden">
-          <img id="image-preview" src="" alt="Preview"
-               class="h-32 rounded-xl object-cover border border-gray-200" />
+          <img id="image-preview" src="" alt="Preview" class="h-32 rounded-xl object-cover" style="border:1px solid rgba(255,255,255,.1);" />
         </div>
-        <p class="text-xs text-gray-400 mt-1">Cole o endereço de uma imagem web. Deixe em branco para usar imagem padrão.</p>
       </div>
 
-      <!-- Active toggle (edit only) -->
       {% if product %}
-        <div class="flex items-center justify-between bg-gray-50 rounded-xl px-5 py-4">
+        <div class="flex items-center justify-between p-4 rounded-2xl" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);">
           <div>
-            <p class="text-sm font-semibold text-gray-700">Produto visível no mercado</p>
-            <p class="text-xs text-gray-400">Desactive temporariamente sem eliminar o produto.</p>
+            <p class="text-sm font-semibold text-white/80">Visível no mercado</p>
+            <p class="text-xs mt-0.5" style="color:rgba(255,255,255,.35);">Desactive para ocultar temporariamente</p>
           </div>
           <label class="relative inline-flex items-center cursor-pointer">
-            <input type="checkbox" name="is_active" value="1"
-                   {{ 'checked' if product.is_active else '' }}
-                   class="sr-only peer">
-            <div class="w-11 h-6 bg-gray-200 peer-checked:bg-forest-500 rounded-full transition-colors
+            <input type="checkbox" name="is_active" value="1" {{ 'checked' if product.is_active else '' }} class="sr-only peer">
+            <div class="w-11 h-6 rounded-full transition-colors bg-white/10 peer-checked:bg-green-500
                         after:content-[''] after:absolute after:top-[2px] after:left-[2px]
                         after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all
                         peer-checked:after:translate-x-5"></div>
@@ -130,18 +95,14 @@
         </div>
       {% endif %}
 
-      <!-- Submit -->
       <div class="flex flex-col sm:flex-row gap-3 pt-2">
-        <button type="submit"
-                class="flex-1 bg-forest-600 hover:bg-forest-700 text-white font-bold py-3.5 rounded-xl transition-colors shadow-md">
+        <button type="submit" class="btn-primary flex-1 py-3.5 text-sm">
           {{ '💾 Guardar Alterações' if product else '🚀 Publicar Produto' }}
         </button>
-        <a href="{{ url_for('seller.dashboard') }}"
-           class="flex-1 text-center border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold py-3.5 rounded-xl transition-colors">
+        <a href="{{ url_for('seller.dashboard') }}" class="btn-outline flex-1 text-center py-3.5 text-sm font-semibold">
           Cancelar
         </a>
       </div>
-
     </form>
   </div>
 </div>
@@ -149,17 +110,14 @@
 
 {% block scripts %}
 <script>
-  // Char counter
   const desc = document.getElementById('description');
   const counter = document.getElementById('char-count');
   counter.textContent = desc.value.length;
   desc.addEventListener('input', () => counter.textContent = desc.value.length);
 
-  // Image preview
   const urlInput = document.getElementById('image_url');
   const previewBox = document.getElementById('image-preview-box');
   const preview = document.getElementById('image-preview');
-
   function updatePreview() {
     const url = urlInput.value.trim();
     if (url.startsWith('http')) {
@@ -170,7 +128,6 @@
       previewBox.classList.add('hidden');
     }
   }
-
   urlInput.addEventListener('input', updatePreview);
   updatePreview();
 </script>
