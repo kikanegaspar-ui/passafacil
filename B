@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>NetFly - Stream & Download</title>
+  <style>
+    :root {
+      --primary: #e50914;
+      --bg-dark: #141414;
+      --bg-card: #1f1f1f;
+      --text-main: #ffffff;
+      --text-muted: #b3b3b3;
+      --success: #25d366;
+      --font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-family); background-color: var(--bg-dark); color: var(--text-main); line-height: 1.6; }
+    
+    header {
+      background: linear-gradient(to bottom, #000, rgba(20,20,20,0.9));
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo { font-size: 1.5rem; font-weight: 800; letter-spacing: -1px; }
+    .logo span { color: var(--primary); }
+    .nav-links { display: flex; gap: 1rem; }
+    .nav-links a { color: var(--text-muted); text
